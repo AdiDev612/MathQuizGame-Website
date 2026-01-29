@@ -1,9 +1,7 @@
-// Route Protection
 const currentUser = DataService.getCurrentUser();
 if (!currentUser) {
-    window.location.replace('index.html');
+    window.location.replace('login.html');
 } else {
-    // Update Profile Section Info
     const profileName = document.getElementById('profileNameDisplay');
     const profileEmail = document.getElementById('profileEmailDisplay');
     const profileAvatar = document.getElementById('profileAvatarDisplay');
@@ -13,21 +11,18 @@ if (!currentUser) {
     if (profileAvatar) profileAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
 }
 
-// ===== Navigation =====
 const navItems = document.querySelectorAll('.nav-item[data-section]');
 const sections = document.querySelectorAll('.section');
 const pageTitle = document.getElementById('pageTitle');
 const logoutBtn = document.querySelector('.logout');
 
-// Logout Handler
 if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
         DataService.logout();
-        // Clear UI state to prevent session leakage to next user
         localStorage.removeItem('currentSection');
         localStorage.removeItem('mathQuizState');
-        window.location.replace('index.html');
+        window.location.replace('login.html');
     });
 }
 
@@ -43,23 +38,18 @@ navItems.forEach(item => {
         const sectionName = item.dataset.section;
         const sectionId = sectionName + 'Section';
 
-        // Update nav active state
         navItems.forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
 
-        // Show selected section
         sections.forEach(section => section.classList.remove('active'));
         document.getElementById(sectionId).classList.add('active');
 
-        // Update page title
         pageTitle.textContent = pageTitles[sectionName] || sectionName;
 
-        // Save current section to localStorage
         localStorage.setItem('currentSection', sectionName);
     });
 });
 
-// ===== Quiz Game Logic =====
 let currentQuestion = 0;
 let score = 0;
 let totalPossibleScore = 0;
@@ -73,7 +63,6 @@ let timerInterval = null;
 let timeLeft = 20;
 const MAX_TIME = 20;
 
-// Update stats display
 function updateStats() {
     document.getElementById('currentScore').textContent = score;
     const totalAnswered = correctAnswers + wrongAnswers;
@@ -83,7 +72,6 @@ function updateStats() {
     document.getElementById('wrongCount').textContent = wrongAnswers;
 }
 
-// Save quiz state to localStorage
 function saveQuizState() {
     const state = {
         currentQuestion,
@@ -96,12 +84,11 @@ function saveQuizState() {
         questions,
         timeLeft,
         isQuizActive: true,
-        currentSection: 'quiz' // Save that user is in quiz section
+        currentSection: 'quiz'
     };
     localStorage.setItem('mathQuizState', JSON.stringify(state));
 }
 
-// Load quiz state from localStorage
 function loadQuizState() {
     const saved = localStorage.getItem('mathQuizState');
     if (saved) {
@@ -117,22 +104,17 @@ function loadQuizState() {
             questions = state.questions;
             timeLeft = state.timeLeft;
 
-            // Switch to quiz section
             sections.forEach(section => section.classList.remove('active'));
             document.getElementById('quizSection').classList.add('active');
 
-            // Update navigation
             navItems.forEach(nav => nav.classList.remove('active'));
             document.querySelector('[data-section="quiz"]').classList.add('active');
 
-            // Update page title
             pageTitle.textContent = 'Start Quiz';
 
-            // Show quiz container
             document.getElementById('quizSetup').style.display = 'none';
             document.getElementById('quizContainer').style.display = 'block';
 
-            // Update displays
             updateStats();
             displayQuestion();
 
@@ -142,19 +124,16 @@ function loadQuizState() {
     return false;
 }
 
-// Clear quiz state
 function clearQuizState() {
     localStorage.removeItem('mathQuizState');
 }
 
-// Difficulty settings (number ranges)
 const difficultySettings = {
     easy: { max: 10, multMax: 5, divMax: 5 },
     medium: { max: 50, multMax: 12, divMax: 10 },
     hard: { max: 100, multMax: 20, divMax: 15 }
 };
 
-// Setup button handlers
 document.querySelectorAll('.category-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -169,7 +148,6 @@ document.querySelectorAll('.difficulty-btn').forEach(btn => {
     });
 });
 
-// Begin quiz from setup screen
 function beginQuiz() {
     const selectedCategory = document.querySelector('.category-btn.active').dataset.category;
     const selectedDifficulty = document.querySelector('.difficulty-btn.active').dataset.difficulty;
@@ -177,14 +155,12 @@ function beginQuiz() {
     quizType = selectedCategory;
     quizDifficulty = selectedDifficulty;
 
-    // Hide setup, show quiz
     document.getElementById('quizSetup').style.display = 'none';
     document.getElementById('quizContainer').style.display = 'block';
 
     startQuiz(quizType);
 }
 
-// Generate random question based on type and difficulty
 function generateQuestion(type) {
     let num1, num2, answer, questionText;
     const diff = difficultySettings[quizDifficulty];
@@ -221,7 +197,6 @@ function generateQuestion(type) {
             break;
     }
 
-    // Generate wrong options
     const options = [answer];
     while (options.length < 4) {
         const wrongAnswer = answer + Math.floor(Math.random() * 10) - 5;
@@ -230,13 +205,11 @@ function generateQuestion(type) {
         }
     }
 
-    // Shuffle options
     options.sort(() => Math.random() - 0.5);
 
     return { questionText, answer, options };
 }
 
-// Start quiz
 function startQuiz(type) {
     quizType = type;
     currentQuestion = 0;
@@ -246,12 +219,10 @@ function startQuiz(type) {
     wrongAnswers = 0;
     questions = [];
 
-    // Generate 10 questions
     for (let i = 0; i < 10; i++) {
         questions.push(generateQuestion(type));
     }
 
-    // Update category and difficulty display
     const categoryNames = {
         'addition': 'Addition',
         'subtraction': 'Subtraction',
@@ -267,13 +238,11 @@ function startQuiz(type) {
     document.getElementById('quizCategory').textContent = categoryNames[quizType];
     document.getElementById('quizDifficulty').textContent = difficultyNames[quizDifficulty];
 
-    // Reset stats display
     updateStats();
 
     displayQuestion();
 }
 
-// Display current question
 function displayQuestion() {
     const question = questions[currentQuestion];
 
@@ -295,11 +264,9 @@ function displayQuestion() {
     selectedAnswer = null;
     document.getElementById('nextBtn').disabled = true;
 
-    // Start timer
     startTimer();
 }
 
-// Timer
 let timerStartTime = null;
 
 function startTimer() {
@@ -317,7 +284,7 @@ function startTimer() {
             clearInterval(timerInterval);
             nextQuestion();
         }
-    }, 100); // Update more frequently for accuracy
+    }, 100);
 }
 
 function updateTimerDisplay() {
@@ -333,7 +300,6 @@ function updateTimerDisplay() {
     }
 }
 
-// Select answer
 function selectAnswer(answer) {
     if (selectedAnswer !== null) return;
 
@@ -351,33 +317,26 @@ function selectAnswer(answer) {
     });
 
     if (answer === correctAnswer) {
-        // Base score: 10 points
-        // Time bonus: up to 20 extra points based on remaining time
         const timeBonus = Math.round((timeLeft / MAX_TIME) * 20);
         const questionScore = 10 + timeBonus;
         score += questionScore;
         correctAnswers++;
 
-        // Show points earned
         showPointsEarned(questionScore);
     } else {
         wrongAnswers++;
     }
 
-    // Track max possible score (30 points per question if answered instantly)
     totalPossibleScore += 30;
 
-    // Update stats display
     updateStats();
 
-    // Save state
     saveQuizState();
 
     document.getElementById('nextBtn').disabled = false;
     clearInterval(timerInterval);
 }
 
-// Next question
 function nextQuestion() {
     currentQuestion++;
 
@@ -389,12 +348,10 @@ function nextQuestion() {
     }
 }
 
-// Skip question
 function skipQuestion() {
     nextQuestion();
 }
 
-// Show points earned animation
 function showPointsEarned(points) {
     const container = document.querySelector('.quiz-question');
     const pointsEl = document.createElement('div');
@@ -417,7 +374,6 @@ function showPointsEarned(points) {
     setTimeout(() => pointsEl.remove(), 1000);
 }
 
-// Add keyframe animation for points
 const pointsStyle = document.createElement('style');
 pointsStyle.textContent = `
     @keyframes pointsFloat {
@@ -428,17 +384,14 @@ pointsStyle.textContent = `
 `;
 document.head.appendChild(pointsStyle);
 
-// Check for saved quiz state on load
 if (!loadQuizState()) {
     updateDashboard();
 }
 
-// Update Dashboard Stats & Leaderboard
 function updateDashboard() {
     const currentUser = DataService.getCurrentUser();
     if (!currentUser) return;
 
-    // 1. Update User Stats
     const stats = DataService.getUserStats(currentUser.username);
     if (stats) {
         document.getElementById('totalScore').textContent = stats.totalScore.toLocaleString();
@@ -446,7 +399,7 @@ function updateDashboard() {
         document.getElementById('avgTime').textContent = stats.avgTime + 's';
         document.getElementById('accuracy').textContent = stats.accuracy + '%';
 
-        // Also update profile stats if they exist (though we removed the container, the elements might stay in JS memory or be re-added later)
+        // Also update profile stats if they exist
         const pScore = document.getElementById('profileTotalScore');
         if (pScore) {
             pScore.textContent = stats.totalScore.toLocaleString();
@@ -455,11 +408,10 @@ function updateDashboard() {
         }
     }
 
-    // 2. Update Leaderboard
     const leaderboard = DataService.getLeaderboard();
     const lbList = document.getElementById('leaderboardList');
     if (lbList) {
-        lbList.innerHTML = ''; // Clear existing
+        lbList.innerHTML = '';
 
         leaderboard.forEach((entry, index) => {
             const rank = index + 1;
@@ -484,7 +436,6 @@ function updateDashboard() {
         });
     }
 
-    // Update Profile Rank
     const myRankIndex = leaderboard.findIndex(u => u.username === currentUser.username);
     const profileRank = document.getElementById('profileRank');
     if (profileRank) {
@@ -494,16 +445,14 @@ function updateDashboard() {
 
 function showResults() {
     clearInterval(timerInterval);
-    clearQuizState(); // Clear saved state when quiz is complete
+    clearQuizState();
 
-    const maxScore = 10 * 30; // 10 questions * 30 max points each
+    const maxScore = 10 * 30;
     const percentage = Math.round((score / maxScore) * 100);
 
-    // Calculate final stats for saving
     const totalAnswered = correctAnswers + wrongAnswers;
     const finalAccuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
 
-    // Save Score to DB
     DataService.saveScore({
         score: score,
         maxScore: maxScore,
@@ -511,7 +460,7 @@ function showResults() {
         type: quizType,
         difficulty: quizDifficulty,
         accuracy: finalAccuracy,
-        timeSpent: 200 - timeLeft // Rough estimate just for demo
+        timeSpent: 200 - timeLeft
     });
 
     let message, emoji;
@@ -551,62 +500,52 @@ function showResults() {
     `;
 }
 
-// Global scope for onclick handlers
 window.resetToSetup = resetToSetup;
 window.backToDashboard = function () {
-    window.location.reload(); // Simple reload to refresh all states and go to dashboard
+    window.location.reload();
 };
 
-// Reset to setup screen
+
 function resetToSetup() {
     clearQuizState();
 
-    // Hide quiz container and show setup
     document.getElementById('quizContainer').style.display = 'none';
     document.getElementById('quizSetup').style.display = 'block';
 
-    // Reset category and difficulty to defaults
     document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.category-btn[data-category="addition"]').classList.add('active');
 
     document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.difficulty-btn[data-difficulty="medium"]').classList.add('active');
 
-    // Keep user in Start Quiz section
     localStorage.setItem('currentSection', 'quiz');
 }
 
-// Restore last viewed section
 function restoreSection() {
     const savedSection = localStorage.getItem('currentSection');
     if (savedSection) {
         const sectionId = savedSection + 'Section';
 
-        // Update nav active state
         navItems.forEach(nav => nav.classList.remove('active'));
         const navItem = document.querySelector(`[data-section="${savedSection}"]`);
         if (navItem) {
             navItem.classList.add('active');
         }
 
-        // Show selected section
         sections.forEach(section => section.classList.remove('active'));
         const sectionElement = document.getElementById(sectionId);
         if (sectionElement) {
             sectionElement.classList.add('active');
         }
 
-        // Update page title
         pageTitle.textContent = pageTitles[savedSection] || savedSection;
     }
 }
 
-// Load saved state on page load
 window.addEventListener('DOMContentLoaded', () => {
-    // Try to load quiz state first (handles quiz section restoration)
+
     const quizLoaded = loadQuizState();
 
-    // If no active quiz, restore the last viewed section
     if (!quizLoaded) {
         restoreSection();
     }

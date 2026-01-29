@@ -1,7 +1,3 @@
-/**
- * Data Service - Handles all "database" operations using Local Storage
- */
-
 const DB_KEYS = {
     USERS: 'math_quiz_users',
     CURRENT_USER: 'math_quiz_current_user',
@@ -9,8 +5,6 @@ const DB_KEYS = {
 };
 
 const DataService = {
-    // === User Management ===
-
     getAllUsers() {
         const users = localStorage.getItem(DB_KEYS.USERS);
         return users ? JSON.parse(users) : [];
@@ -18,7 +12,6 @@ const DataService = {
 
     saveUser(user) {
         const users = this.getAllUsers();
-        // Check if username or email already exists
         if (users.find(u => u.username === user.username || u.email === user.email)) {
             return { success: false, message: 'Username or Email already exists!' };
         }
@@ -30,11 +23,9 @@ const DataService = {
 
     loginUser(identifier, password) {
         const users = this.getAllUsers();
-        // Allow login with either username or email
         const user = users.find(u => (u.username === identifier || u.email === identifier) && u.password === password);
 
         if (user) {
-            // Remove password from session object
             const { password, ...safeUser } = user;
             this.setCurrentUser(safeUser);
             return { success: true, user: safeUser };
@@ -55,7 +46,6 @@ const DataService = {
         return user ? JSON.parse(user) : null;
     },
 
-    // === Score Management ===
 
     saveScore(scoreData) {
         const currentUser = this.getCurrentUser();
@@ -87,7 +77,6 @@ const DataService = {
     },
 
     getUserStats(username) {
-        // If no username provided, use current user
         if (!username) {
             const current = this.getCurrentUser();
             if (!current) return null;
@@ -122,7 +111,6 @@ const DataService = {
         const users = this.getAllUsers();
         const scores = this.getAllScores();
 
-        // Aggregate scores per user
         const leaderboard = users.map(user => {
             const userScores = scores.filter(s => s.userId === user.username);
             const totalScore = userScores.reduce((sum, s) => sum + (s.score || 0), 0);
@@ -134,7 +122,6 @@ const DataService = {
             };
         });
 
-        // Sort by Total Score descending
         return leaderboard.sort((a, b) => b.totalScore - a.totalScore).slice(0, 5);
     }
 };

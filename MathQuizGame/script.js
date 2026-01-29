@@ -1,10 +1,9 @@
-// Toast Notification Function
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
 
-    // Icon based on type
+
     let icon = 'ℹ️';
     if (type === 'success') icon = '✅';
     if (type === 'error') icon = '❌';
@@ -16,28 +15,23 @@ function showToast(message, type = 'info') {
 
     container.appendChild(toast);
 
-    // Trigger animation
     setTimeout(() => toast.classList.add('show'), 100);
 
-    // Remove after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
 
-// Route Protection: Redirect if already logged in
 if (DataService.getCurrentUser()) {
     window.location.replace('dashboard.html');
 }
 
-// Form sections
 const signInSection = document.getElementById('signInSection');
 const signUpSection = document.getElementById('signUpSection');
 const showSignUpLink = document.getElementById('showSignUp');
 const showSignInLink = document.getElementById('showSignIn');
 
-// Persists auth mode
 function setAuthMode(mode) {
     if (mode === 'signup') {
         signInSection.classList.remove('active');
@@ -49,26 +43,21 @@ function setAuthMode(mode) {
     localStorage.setItem('auth_mode', mode);
 }
 
-// Toggle to Sign Up
 showSignUpLink.addEventListener('click', (e) => {
     e.preventDefault();
     setAuthMode('signup');
 });
 
-// Toggle to Sign In
 showSignInLink.addEventListener('click', (e) => {
     e.preventDefault();
     setAuthMode('login');
 });
 
-// Restore auth mode on load
 const savedMode = localStorage.getItem('auth_mode');
 if (savedMode) {
     setAuthMode(savedMode);
 }
 
-// Helper: Show error on inputs
-// Helper: Show error on inputs
 function showError(inputs, message) {
     const errorDisplay = document.getElementById('loginErrorMessage');
     if (errorDisplay && message) {
@@ -79,7 +68,6 @@ function showError(inputs, message) {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.add('error');
 
-        // Remove error on input
         input.addEventListener('input', () => {
             wrapper.classList.remove('error');
             if (errorDisplay) errorDisplay.textContent = '';
@@ -87,7 +75,6 @@ function showError(inputs, message) {
     });
 }
 
-// Sign In form validation
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -105,17 +92,14 @@ loginForm.addEventListener('submit', (e) => {
     const result = DataService.loginUser(username, password);
 
     if (result.success) {
-        // Success - Clear any previous user's UI state
         localStorage.removeItem('currentSection');
         localStorage.removeItem('mathQuizState');
         window.location.replace('dashboard.html');
     } else {
-        // Show error on inputs instead of toast
         showError([usernameInput, passwordInput], 'Invalid username or password');
     }
 });
 
-// Helper: Show error on signup inputs
 function showSignupError(inputs, message) {
     const errorDisplay = document.getElementById('signupErrorMessage');
     if (errorDisplay && message) {
@@ -126,7 +110,6 @@ function showSignupError(inputs, message) {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.add('error');
 
-        // Remove error on input
         input.addEventListener('input', () => {
             wrapper.classList.remove('error');
             if (errorDisplay) errorDisplay.textContent = '';
@@ -134,7 +117,6 @@ function showSignupError(inputs, message) {
     });
 }
 
-// Sign Up form validation
 const signupForm = document.getElementById('signupForm');
 signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -171,7 +153,6 @@ signupForm.addEventListener('submit', (e) => {
         showToast('Account created successfully! Please sign in.', 'success');
         loginForm.reset();
         signupForm.reset();
-        // Switch to login view
         setAuthMode('login');
     } else {
         showSignupError([usernameInput, emailInput], result.message);

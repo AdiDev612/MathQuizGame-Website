@@ -1,4 +1,3 @@
-/* ===== Base Reset ===== */
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +11,7 @@ body {
     display: flex;
 }
 
-/* ===== Math Symbols Background ===== */
+
 .math-symbols {
     position: fixed;
     inset: 0;
@@ -56,7 +55,7 @@ body {
     }
 }
 
-/* ===== Sidebar ===== */
+
 .sidebar {
     width: 260px;
     background: #ffffff;
@@ -139,7 +138,7 @@ body {
     background: #fef2f2;
 }
 
-/* ===== Main Content ===== */
+
 .main-content {
     flex: 1;
     margin-left: 260px;
@@ -147,7 +146,7 @@ body {
     min-height: 100vh;
 }
 
-/* ===== Header ===== */
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -172,7 +171,7 @@ body {
 
 
 
-/* ===== Sections ===== */
+
 .section {
     display: none;
     animation: fadeIn 0.3s ease;
@@ -194,7 +193,6 @@ body {
     }
 }
 
-/* ===== Dashboard Layout ===== */
 .dashboard-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -220,7 +218,7 @@ body {
     margin-bottom: 24px;
 }
 
-/* ===== Stats Vertical ===== */
+
 .stats-vertical {
     display: flex;
     flex-direction: column;
@@ -289,7 +287,7 @@ body {
     color: #1f2937;
 }
 
-/* ===== Quick Actions ===== */
+
 .quick-actions h2 {
     font-size: 1.25rem;
     color: #1f2937;
@@ -348,7 +346,7 @@ body {
     background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
 }
 
-/* ===== Recent Activity ===== */
+
 .recent-activity h2 {
     font-size: 1.25rem;
     color: #1f2937;
@@ -408,7 +406,6 @@ body {
     color: #9ca3af;
 }
 
-/* ===== Quiz Setup ===== */
 .quiz-setup {
     max-width: 900px;
     margin: 0 auto;
@@ -531,7 +528,6 @@ body {
     margin-top: 16px;
 }
 
-/* ===== Quiz Section ===== */
 .quiz-container {
     max-width: 700px;
     margin: 0 auto;
@@ -568,7 +564,6 @@ body {
     height: 24px;
 }
 
-/* Quiz Stats */
 .quiz-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -724,7 +719,6 @@ body {
     background: #f9fafb;
 }
 
-/* ===== Leaderboard ===== */
 #leaderboardSection h2 {
     font-size: 1.5rem;
     color: #1f2937;
@@ -780,7 +774,6 @@ body {
     font-weight: 600;
 }
 
-/* ===== Profile ===== */
 #profileSection h2 {
     font-size: 1.5rem;
     color: #1f2937;
@@ -852,7 +845,6 @@ body {
     color: #22c55e;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 1200px) {
     .dashboard-layout {
         grid-template-columns: 1fr;
