@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Math Quiz Game Dashboard">
+    <title>Math Quiz Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <div class="math-symbols">
+        <span class="math-symbol" style="top: 10%; left: 5%;">÷</span>
+        <span class="math-symbol" style="top: 25%; left: 15%;">+</span>
+        <span class="math-symbol" style="top: 15%; left: 85%;">×</span>
+        <span class="math-symbol" style="top: 40%; left: 8%;">=</span>
+        <span class="math-symbol" style="top: 60%; left: 12%;">π</span>
+        <span class="math-symbol" style="top: 75%; left: 5%;">%</span>
+        <span class="math-symbol" style="top: 50%; left: 90%;">√</span>
+        <span class="math-symbol" style="top: 70%; left: 88%;">∑</span>
+        <span class="math-symbol" style="top: 85%; left: 80%;">∞</span>
+        <span class="math-symbol" style="top: 30%; left: 92%;">Δ</span>
+        <span class="math-symbol" style="top: 5%; left: 50%;">±</span>
+        <span class="math-symbol" style="top: 90%; left: 45%;">≠</span>
+        <span class="math-symbol" style="top: 20%; left: 40%;">123</span>
+        <span class="math-symbol" style="top: 65%; left: 75%;">42</span>
+        <span class="math-symbol" style="top: 80%; left: 25%;">7</span>
+        <span class="math-symbol" style="top: 45%; left: 25%;">3.14</span>
+        <span class="math-symbol" style="top: 92%; left: 10%;">0</span>
+    </div>
+
+
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-icon">∑</span>
+            <span class="logo-text">MathQuiz</span>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active" data-section="dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-section="quiz">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <circle cx="12" cy="17" r="0.5" fill="currentColor" />
+                </svg>
+                <span>Start Quiz</span>
+            </a>
+            <a href="#" class="nav-item" data-section="profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <a href="index.html" class="nav-item logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16,17 21,12 16,7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Logout</span>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button id="menuToggle" class="menu-toggle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+
+        </header>
+        <section id="dashboardSection" class="section active">
+            <div class="dashboard-layout">
+                <div class="dashboard-left">
+                    <div class="stats-vertical">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon
+                                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Score</h3>
+                                <p class="stat-value" id="totalScore">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22,4 12,14.01 9,11.01" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Quizzes Completed</h3>
+                                <p class="stat-value" id="quizzesCompleted">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12,6 12,12 16,14" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Avg. Time</h3>
+                                <p class="stat-value" id="avgTime">0s</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 20V10" />
+                                    <path d="M18 20V4" />
+                                    <path d="M6 20v-4" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Accuracy</h3>
+                                <p class="stat-value" id="accuracy">0%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-right">
+                    <div class="leaderboard-table">
+                        <h2>🏆 Leaderboard</h2>
+                        <div class="leaderboard-row header">
+                            <span>Rank</span>
+                            <span>Player</span>
+                            <span>Score</span>
+                            <span>Quizzes</span>
+                        </div>
+                        <div id="leaderboardList"></div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="quizSection" class="section">
+            <div class="quiz-setup" id="quizSetup">
+
+                <div class="setup-group">
+                    <h3>Choose Category</h3>
+                    <div class="category-options">
+                        <button class="category-btn active" data-category="addition">
+                            <span class="cat-icon">+</span>
+                            <span>Addition</span>
+                        </button>
+                        <button class="category-btn" data-category="subtraction">
+                            <span class="cat-icon">−</span>
+                            <span>Subtraction</span>
+                        </button>
+                        <button class="category-btn" data-category="multiplication">
+                            <span class="cat-icon">×</span>
+                            <span>Multiplication</span>
+                        </button>
+                        <button class="category-btn" data-category="division">
+                            <span class="cat-icon">÷</span>
+                            <span>Division</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setup-group">
+                    <h3>Choose Difficulty</h3>
+                    <div class="difficulty-options">
+                        <button class="difficulty-btn" data-difficulty="easy">
+                            <span class="diff-label">Easy</span>
+                            <span class="diff-desc">Numbers 1-10</span>
+                        </button>
+                        <button class="difficulty-btn active" data-difficulty="medium">
+                            <span class="diff-label">Medium</span>
+                            <span class="diff-desc">Numbers 1-50</span>
+                        </button>
+                        <button class="difficulty-btn" data-difficulty="hard">
+                            <span class="diff-label">Hard</span>
+                            <span class="diff-desc">Numbers 1-100</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn-primary start-quiz-btn" onclick="beginQuiz()">
+                    Start Quiz →
+                </button>
+            </div>
+
+            <div class="quiz-container" id="quizContainer" style="display: none;">
+                <div class="quiz-header">
+                    <div class="quiz-info">
+                        <span id="questionNumber">Question 1/10</span>
+                        <span id="quizCategory">Addition</span>
+                        <span id="quizDifficulty">Medium</span>
+                    </div>
+                    <div class="quiz-timer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12,6 12,12 16,14" />
+                        </svg>
+                        <span id="timer">00:20</span>
+                    </div>
+                </div>
+
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="currentScore">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Accuracy</span>
+                        <span class="stat-value" id="currentAccuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Correct</span>
+                        <span class="stat-value correct-count" id="correctCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Wrong</span>
+                        <span class="stat-value wrong-count" id="wrongCount">0</span>
+                    </div>
+                </div>
+
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h2 id="questionText">12 + 8 = ?</h2>
+                </div>
+
+                <div class="quiz-options" id="quizOptions">
+                    <button class="option-btn" onclick="selectAnswer(20)">20</button>
+                    <button class="option-btn" onclick="selectAnswer(18)">18</button>
+                    <button class="option-btn" onclick="selectAnswer(22)">22</button>
+                    <button class="option-btn" onclick="selectAnswer(19)">19</button>
+                </div>
+
+                <div class="quiz-actions">
+                    <button class="btn-secondary" onclick="skipQuestion()">Skip</button>
+                    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="leaderboardSection" class="section">
+            <h2>🏆 Leaderboard</h2>
+            <div class="leaderboard-table">
+                <div class="leaderboard-row header">
+                    <span>Rank</span>
+                    <span>Player</span>
+                    <span>Score</span>
+                    <span>Quizzes</span>
+                </div>
+                <div class="leaderboard-row gold">
+                    <span>🥇 1</span>
+                    <span>MathWizard</span>
+                    <span>5,420</span>
+                    <span>89</span>
+                </div>
+                <div class="leaderboard-row silver">
+                    <span>🥈 2</span>
+                    <span>Calculator</span>
+                    <span>4,890</span>
+                    <span>76</span>
+                </div>
+                <div class="leaderboard-row bronze">
+                    <span>🥉 3</span>
+                    <span>NumberNinja</span>
+                    <span>4,320</span>
+                    <span>68</span>
+                </div>
+                <div class="leaderboard-row">
+                    <span>4</span>
+                    <span>QuizMaster</span>
+                    <span>3,980</span>
+                    <span>52</span>
+                </div>
+                <div class="leaderboard-row highlight">
+                    <span>12</span>
+                    <span>You</span>
+                    <span>1,250</span>
+                    <span>24</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="profileSection" class="section">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <span id="profileAvatarDisplay">P</span>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileNameDisplay">Player</h3>
+                    <p id="profileEmailDisplay">player@example.com</p>
+                    <p class="member-since">Member since January 2026</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="dataService.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
