@@ -14,7 +14,15 @@ if (!currentUser) {
 const navItems = document.querySelectorAll('.nav-item[data-section]');
 const sections = document.querySelectorAll('.section');
 const pageTitle = document.getElementById('pageTitle');
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.querySelector('.sidebar');
 const logoutBtn = document.querySelector('.logout');
+
+if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('mobile-active');
+    });
+}
 
 if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
@@ -47,6 +55,10 @@ navItems.forEach(item => {
         pageTitle.textContent = pageTitles[sectionName] || sectionName;
 
         localStorage.setItem('currentSection', sectionName);
+
+        if (window.innerWidth <= 600) {
+            sidebar.classList.remove('mobile-active');
+        }
     });
 });
 
