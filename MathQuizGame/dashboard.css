@@ -1166,6 +1166,14 @@ body {
         display: block;
         width: 100%;
         max-width: 600px;
+        padding: 14px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+        border: none !important;
+        color: white !important;
+        cursor: pointer;
     }
 
     .setup-step {
@@ -1177,7 +1185,7 @@ body {
     }
 
     .setup-step.step-2.active .mobile-back-btn {
-        display: block;
+        display: flex;
     }
 
     .setup-step-buttons {
@@ -1187,13 +1195,17 @@ body {
         max-width: 600px;
     }
 
-    .setup-step-buttons .btn-secondary,
-    .setup-step-buttons .btn-primary {
+    .setup-step-buttons .btn-primary,
+    .setup-step-buttons .mobile-back-btn {
         flex: 1;
         padding: 14px 20px;
         font-size: 1rem;
         font-weight: 600;
         border-radius: 12px;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+        border: none !important;
+        color: white !important;
+        cursor: pointer;
     }
 
     .category-options {
