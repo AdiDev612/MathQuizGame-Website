@@ -160,6 +160,33 @@ document.querySelectorAll('.difficulty-btn').forEach(btn => {
     });
 });
 
+// Mobile step navigation
+const nextToStep2Btn = document.getElementById('nextToStep2');
+const backToStep1Btn = document.getElementById('backToStep1');
+const setupStep1 = document.getElementById('setupStep1');
+const setupStep2 = document.getElementById('setupStep2');
+const stepDots = document.querySelectorAll('.step-dot');
+
+if (nextToStep2Btn) {
+    nextToStep2Btn.addEventListener('click', () => {
+        setupStep1.classList.remove('active');
+        setupStep2.classList.add('active');
+        stepDots[0].classList.remove('active');
+        stepDots[0].classList.add('completed');
+        stepDots[1].classList.add('active');
+    });
+}
+
+if (backToStep1Btn) {
+    backToStep1Btn.addEventListener('click', () => {
+        setupStep2.classList.remove('active');
+        setupStep1.classList.add('active');
+        stepDots[1].classList.remove('active');
+        stepDots[0].classList.remove('completed');
+        stepDots[0].classList.add('active');
+    });
+}
+
 function beginQuiz() {
     const selectedCategory = document.querySelector('.category-btn.active').dataset.category;
     const selectedDifficulty = document.querySelector('.difficulty-btn.active').dataset.difficulty;

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Math Quiz Game Dashboard">
-    <title>Math Quiz Dashboard</title>
+    <title>MathQuizGame</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -168,47 +168,68 @@
         <section id="quizSection" class="section">
             <div class="quiz-setup" id="quizSetup">
 
-                <div class="setup-group">
-                    <h3>Choose Category</h3>
-                    <div class="category-options">
-                        <button class="category-btn active" data-category="addition">
-                            <span class="cat-icon">+</span>
-                            <span>Addition</span>
+                <div class="setup-steps-indicator">
+                    <div class="step-dot active" data-step="1">1</div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="2">2</div>
+                </div>
+
+                <div class="setup-step step-1 active" id="setupStep1">
+                    <div class="setup-group">
+                        <h3>Choose Category</h3>
+                        <div class="category-options">
+                            <button class="category-btn active" data-category="addition">
+                                <span class="cat-icon">+</span>
+                                <span>Addition</span>
+                            </button>
+                            <button class="category-btn" data-category="subtraction">
+                                <span class="cat-icon">−</span>
+                                <span>Subtraction</span>
+                            </button>
+                            <button class="category-btn" data-category="multiplication">
+                                <span class="cat-icon">×</span>
+                                <span>Multiplication</span>
+                            </button>
+                            <button class="category-btn" data-category="division">
+                                <span class="cat-icon">÷</span>
+                                <span>Division</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-primary start-quiz-btn mobile-next-btn" id="nextToStep2">
+                        Next →
+                    </button>
+                </div>
+
+                <div class="setup-step step-2" id="setupStep2">
+                    <div class="setup-group">
+                        <h3>Choose Difficulty</h3>
+                        <div class="difficulty-options">
+                            <button class="difficulty-btn" data-difficulty="easy">
+                                <span class="diff-label">Easy</span>
+                                <span class="diff-desc">Numbers 1-10</span>
+                            </button>
+                            <button class="difficulty-btn active" data-difficulty="medium">
+                                <span class="diff-label">Medium</span>
+                                <span class="diff-desc">Numbers 1-50</span>
+                            </button>
+                            <button class="difficulty-btn" data-difficulty="hard">
+                                <span class="diff-label">Hard</span>
+                                <span class="diff-desc">Numbers 1-100</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="setup-step-buttons">
+                        <button class="btn-secondary mobile-back-btn" id="backToStep1">
+                            ← Back
                         </button>
-                        <button class="category-btn" data-category="subtraction">
-                            <span class="cat-icon">−</span>
-                            <span>Subtraction</span>
-                        </button>
-                        <button class="category-btn" data-category="multiplication">
-                            <span class="cat-icon">×</span>
-                            <span>Multiplication</span>
-                        </button>
-                        <button class="category-btn" data-category="division">
-                            <span class="cat-icon">÷</span>
-                            <span>Division</span>
+                        <button class="btn-primary start-quiz-btn" onclick="beginQuiz()">
+                            Start Quiz →
                         </button>
                     </div>
                 </div>
 
-                <div class="setup-group">
-                    <h3>Choose Difficulty</h3>
-                    <div class="difficulty-options">
-                        <button class="difficulty-btn" data-difficulty="easy">
-                            <span class="diff-label">Easy</span>
-                            <span class="diff-desc">Numbers 1-10</span>
-                        </button>
-                        <button class="difficulty-btn active" data-difficulty="medium">
-                            <span class="diff-label">Medium</span>
-                            <span class="diff-desc">Numbers 1-50</span>
-                        </button>
-                        <button class="difficulty-btn" data-difficulty="hard">
-                            <span class="diff-label">Hard</span>
-                            <span class="diff-desc">Numbers 1-100</span>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn-primary start-quiz-btn" onclick="beginQuiz()">
+                <button class="btn-primary start-quiz-btn desktop-start-btn" onclick="beginQuiz()">
                     Start Quiz →
                 </button>
             </div>
