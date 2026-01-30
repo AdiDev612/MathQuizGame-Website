@@ -1196,12 +1196,6 @@ body {
         border-radius: 12px;
     }
 
-    .setup-step-buttons .btn-secondary {
-        background: #f3f4f6;
-        border: 2px solid #e5e7eb;
-        color: #4b5563;
-    }
-
     .category-options {
         grid-template-columns: repeat(2, 1fr);
     }

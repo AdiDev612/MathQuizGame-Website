@@ -556,6 +556,22 @@ function resetToSetup() {
     document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.difficulty-btn[data-difficulty="medium"]').classList.add('active');
 
+    // Reset mobile steps back to step 1
+    const setupStep1 = document.getElementById('setupStep1');
+    const setupStep2 = document.getElementById('setupStep2');
+    const stepDots = document.querySelectorAll('.step-dot');
+
+    if (setupStep1 && setupStep2) {
+        setupStep2.classList.remove('active');
+        setupStep1.classList.add('active');
+    }
+
+    if (stepDots.length >= 2) {
+        stepDots[1].classList.remove('active');
+        stepDots[0].classList.remove('completed');
+        stepDots[0].classList.add('active');
+    }
+
     localStorage.setItem('currentSection', 'quiz');
 }
 
