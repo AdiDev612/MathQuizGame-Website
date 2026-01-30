@@ -1198,12 +1198,13 @@ body {
         gap: 12px;
         width: 100%;
         max-width: 600px;
+        align-items: stretch;
     }
 
     .setup-step-buttons .btn-primary,
     .setup-step-buttons .mobile-back-btn {
         flex: 1;
-        padding: 14px 20px;
+        padding: 0 20px;
         font-size: 1rem;
         font-weight: 600;
         border-radius: 12px;
@@ -1211,11 +1212,12 @@ body {
         border: none !important;
         color: white !important;
         cursor: pointer;
-        height: 52px;
+        min-height: 52px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
+        margin: 0;
     }
 
     .category-options {
