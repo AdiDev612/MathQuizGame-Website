@@ -518,6 +518,7 @@ body {
 
 .desktop-start-btn {
     display: block;
+    margin: 0 auto;
 }
 
 .quiz-setup h2 {
@@ -1188,6 +1189,10 @@ body {
         display: flex;
     }
 
+    .setup-group h3 {
+        text-align: center;
+    }
+
     .setup-step-buttons {
         display: flex;
         gap: 12px;
@@ -1206,6 +1211,11 @@ body {
         border: none !important;
         color: white !important;
         cursor: pointer;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
     }
 
     .category-options {
