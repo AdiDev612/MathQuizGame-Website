@@ -533,7 +533,6 @@ function showResults() {
             </p>
             <div style="display: flex; gap: 16px; justify-content: center;">
                 <button class="btn-primary" onclick="resetToSetup()">Play Again</button>
-                <button class="btn-secondary" onclick="backToDashboard()" style="background: #f3f4f6; color: #4b5563; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;">Dashboard</button>
             </div>
         </div>
     `;

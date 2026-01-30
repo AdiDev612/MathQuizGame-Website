@@ -503,11 +503,17 @@ body {
     flex: 1;
 }
 
+/* Hide mobile-only elements on desktop */
 .mobile-next-btn,
 .mobile-back-btn,
-.setup-step.step-2,
-.setup-steps-indicator {
+.setup-steps-indicator,
+.setup-step-buttons {
     display: none;
+}
+
+/* Show both steps on desktop */
+.setup-step {
+    display: flex;
 }
 
 .desktop-start-btn {
@@ -1098,21 +1104,21 @@ body {
     }
 
     .quiz-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        margin-bottom: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 12px;
     }
 
     .stat-item {
-        padding: 10px;
+        padding: 6px 4px;
     }
 
     .stat-item .stat-value {
-        font-size: 1.25rem;
+        font-size: 1rem;
     }
 
     .stat-item .stat-label {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
     }
 
     .quiz-progress {
@@ -1176,6 +1182,24 @@ body {
 
     .setup-step-buttons {
         display: flex;
+        gap: 12px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .setup-step-buttons .btn-secondary,
+    .setup-step-buttons .btn-primary {
+        flex: 1;
+        padding: 14px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+    }
+
+    .setup-step-buttons .btn-secondary {
+        background: #f3f4f6;
+        border: 2px solid #e5e7eb;
+        color: #4b5563;
     }
 
     .category-options {
