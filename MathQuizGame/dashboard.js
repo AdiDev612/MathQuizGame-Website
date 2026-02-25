@@ -60,6 +60,11 @@ navItems.forEach(item => {
 
         localStorage.setItem('currentSection', sectionName);
 
+        // Refresh dashboard stats whenever the user navigates back to it
+        if (sectionName === 'dashboard') {
+            updateDashboard();
+        }
+
         if (window.innerWidth <= 600) {
             sidebar.classList.remove('mobile-active');
         }
@@ -486,7 +491,7 @@ async function updateDashboard() {
     }
 }
 
-function showResults() {
+async function showResults() {
     clearInterval(timerInterval);
     clearQuizState();
 
@@ -496,7 +501,7 @@ function showResults() {
     const totalAnswered = correctAnswers + wrongAnswers;
     const finalAccuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
 
-    DataService.saveScore({
+    await DataService.saveScore({
         score: score,
         maxScore: maxScore,
         correctAnswers: correctAnswers,
@@ -505,6 +510,9 @@ function showResults() {
         accuracy: finalAccuracy,
         timeSpent: 200 - timeLeft
     });
+
+    // After saving the score, refresh dashboard stats and leaderboard
+    await updateDashboard();
 
     let message, emoji;
     if (percentage >= 90) {
