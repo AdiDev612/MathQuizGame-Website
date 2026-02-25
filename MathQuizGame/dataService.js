@@ -1,36 +1,79 @@
+// Supabase configuration
+const SUPABASE_URL = 'https://fswnycvpmfufadyghypj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzd255Y3ZwbWZ1ZmFkeWdoeXBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU0MzAsImV4cCI6MjA4NzU2MTQzMH0.AtgS3TMcggPsVcnXGWyFTFEvGoclP7ot2zx78bEzNJ8';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const DB_KEYS = {
-    USERS: 'math_quiz_users',
-    CURRENT_USER: 'math_quiz_current_user',
-    SCORES: 'math_quiz_scores'
+    CURRENT_USER: 'math_quiz_current_user'
 };
 
 const DataService = {
-    getAllUsers() {
-        const users = localStorage.getItem(DB_KEYS.USERS);
-        return users ? JSON.parse(users) : [];
+    async getAllUsers() {
+        const { data, error } = await supabaseClient
+            .from('user')
+            .select('id, email, username');
+
+        if (error) {
+            console.error('Error fetching users from Supabase:', error);
+            return [];
+        }
+        return data || [];
     },
 
-    saveUser(user) {
-        const users = this.getAllUsers();
-        if (users.find(u => u.username === user.username || u.email === user.email)) {
+    async saveUser(user) {
+        // Check for existing username or email
+        const { data: existing, error: existingError } = await supabaseClient
+            .from('user')
+            .select('id')
+            .or(`username.eq.${user.username},email.eq.${user.email}`)
+            .limit(1);
+
+        if (existingError) {
+            console.error('Error checking existing user:', existingError);
+            return { success: false, message: 'Could not create account. Please try again.' };
+        }
+
+        if (existing && existing.length > 0) {
             return { success: false, message: 'Username or Email already exists!' };
         }
 
-        users.push(user);
-        localStorage.setItem(DB_KEYS.USERS, JSON.stringify(users));
-        return { success: true };
+        const { data, error } = await supabaseClient
+            .from('user')
+            .insert({
+                email: user.email,
+                username: user.username,
+                password: user.password
+            })
+            .select('id, email, username')
+            .single();
+
+        if (error) {
+            console.error('Error saving user:', error);
+            return { success: false, message: 'Could not create account. Please try again.' };
+        }
+
+        return { success: true, user: data };
     },
 
-    loginUser(identifier, password) {
-        const users = this.getAllUsers();
-        const user = users.find(u => (u.username === identifier || u.email === identifier) && u.password === password);
+    async loginUser(identifier, password) {
+        // Try match by username or email
+        const { data, error } = await supabaseClient
+            .from('user')
+            .select('id, email, username, password')
+            .or(`username.eq.${identifier},email.eq.${identifier}`)
+            .single();
 
-        if (user) {
-            const { password, ...safeUser } = user;
-            this.setCurrentUser(safeUser);
-            return { success: true, user: safeUser };
+        if (error || !data || data.password !== password) {
+            if (error) {
+                console.error('Error logging in user:', error);
+            }
+            return { success: false, message: 'Invalid username/email or password' };
         }
-        return { success: false, message: 'Invalid username/email or password' };
+
+        const { password: _pw, ...safeUser } = data;
+        this.setCurrentUser(safeUser);
+        return { success: true, user: safeUser };
     },
 
     logout() {
@@ -47,46 +90,82 @@ const DataService = {
     },
 
 
-    saveScore(scoreData) {
+    async saveScore(scoreData) {
         const currentUser = this.getCurrentUser();
         if (!currentUser) return false;
 
-        const scores = this.getAllScores();
-        const newScore = {
-            userId: currentUser.username,
-            date: new Date().toISOString(),
-            ...scoreData
-        };
+        const { error } = await supabaseClient.from('scores').insert({
+            user_id: currentUser.id,
+            score: scoreData.score,
+            max_score: scoreData.maxScore,
+            correct_answers: scoreData.correctAnswers,
+            type: scoreData.type,
+            difficulty: scoreData.difficulty,
+            accuracy: scoreData.accuracy,
+            time_spent: scoreData.timeSpent
+        });
 
-        scores.push(newScore);
-        localStorage.setItem(DB_KEYS.SCORES, JSON.stringify(scores));
+        if (error) {
+            console.error('Error saving score:', error);
+            return false;
+        }
         return true;
     },
 
-    getAllScores() {
-        const scores = localStorage.getItem(DB_KEYS.SCORES);
-        return scores ? JSON.parse(scores) : [];
-    },
-
-    getUserHistory() {
+    async getUserHistory() {
         const currentUser = this.getCurrentUser();
         if (!currentUser) return [];
 
-        const scores = this.getAllScores();
-        return scores.filter(s => s.userId === currentUser.username);
-    },
+        const { data, error } = await supabaseClient
+            .from('scores')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
 
-    getUserStats(username) {
-        if (!username) {
-            const current = this.getCurrentUser();
-            if (!current) return null;
-            username = current.username;
+        if (error) {
+            console.error('Error fetching user history:', error);
+            return [];
         }
 
-        const scores = this.getAllScores();
-        const userScores = scores.filter(s => s.userId === username);
+        return data || [];
+    },
 
-        if (userScores.length === 0) {
+    async getUserStats(username) {
+        let userId = null;
+
+        if (username) {
+            const { data: userRow, error: userError } = await supabaseClient
+                .from('user')
+                .select('id')
+                .eq('username', username)
+                .single();
+
+            if (userError || !userRow) {
+                console.error('Error fetching user for stats:', userError);
+                return {
+                    totalScore: 0,
+                    quizzesCompleted: 0,
+                    avgTime: 0,
+                    accuracy: 0
+                };
+            }
+
+            userId = userRow.id;
+        } else {
+            const current = this.getCurrentUser();
+            if (!current) return null;
+            userId = current.id;
+        }
+
+        const { data: scores, error } = await supabaseClient
+            .from('scores')
+            .select('score, accuracy, time_spent')
+            .eq('user_id', userId);
+
+        if (error || !scores || scores.length === 0) {
+            if (error) {
+                console.error('Error fetching user stats:', error);
+            }
             return {
                 totalScore: 0,
                 quizzesCompleted: 0,
@@ -95,30 +174,56 @@ const DataService = {
             };
         }
 
-        const totalScore = userScores.reduce((sum, s) => sum + (s.score || 0), 0);
-        const totalaccuracy = userScores.reduce((sum, s) => sum + (s.accuracy || 0), 0);
-        const totalTime = userScores.reduce((sum, s) => sum + (s.timeSpent || 0), 0);
+        const totalScore = scores.reduce((sum, s) => sum + (s.score || 0), 0);
+        const totalaccuracy = scores.reduce((sum, s) => sum + (s.accuracy || 0), 0);
+        const totalTime = scores.reduce((sum, s) => sum + (s.time_spent || 0), 0);
 
         return {
             totalScore: totalScore,
-            quizzesCompleted: userScores.length,
-            accuracy: Math.round(totalaccuracy / userScores.length),
-            avgTime: Math.round(totalTime / userScores.length)
+            quizzesCompleted: scores.length,
+            accuracy: Math.round(totalaccuracy / scores.length),
+            avgTime: Math.round(totalTime / scores.length)
         };
     },
 
-    getLeaderboard() {
-        const users = this.getAllUsers();
-        const scores = this.getAllScores();
+    async getLeaderboard() {
+        const { data: users, error: usersError } = await supabaseClient
+            .from('user')
+            .select('id, username');
+
+        if (usersError || !users) {
+            if (usersError) {
+                console.error('Error fetching users for leaderboard:', usersError);
+            }
+            return [];
+        }
+
+        const { data: scores, error: scoresError } = await supabaseClient
+            .from('scores')
+            .select('user_id, score');
+
+        if (scoresError || !scores) {
+            if (scoresError) {
+                console.error('Error fetching scores for leaderboard:', scoresError);
+            }
+            return [];
+        }
+
+        const aggregates = new Map();
+
+        scores.forEach(s => {
+            const agg = aggregates.get(s.user_id) || { totalScore: 0, quizzesCompleted: 0 };
+            agg.totalScore += s.score || 0;
+            agg.quizzesCompleted += 1;
+            aggregates.set(s.user_id, agg);
+        });
 
         const leaderboard = users.map(user => {
-            const userScores = scores.filter(s => s.userId === user.username);
-            const totalScore = userScores.reduce((sum, s) => sum + (s.score || 0), 0);
-
+            const agg = aggregates.get(user.id) || { totalScore: 0, quizzesCompleted: 0 };
             return {
                 username: user.username,
-                totalScore: totalScore,
-                quizzesCompleted: userScores.length
+                totalScore: agg.totalScore,
+                quizzesCompleted: agg.quizzesCompleted
             };
         });
 

@@ -76,7 +76,7 @@ function showError(inputs, message) {
 }
 
 const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const usernameInput = document.getElementById('username');
@@ -89,7 +89,7 @@ loginForm.addEventListener('submit', (e) => {
         return;
     }
 
-    const result = DataService.loginUser(username, password);
+    const result = await DataService.loginUser(username, password);
 
     if (result.success) {
         localStorage.removeItem('currentSection');
@@ -118,7 +118,7 @@ function showSignupError(inputs, message) {
 }
 
 const signupForm = document.getElementById('signupForm');
-signupForm.addEventListener('submit', (e) => {
+signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const emailInput = document.getElementById('signupEmail');
@@ -164,7 +164,7 @@ signupForm.addEventListener('submit', (e) => {
         password
     };
 
-    const result = DataService.saveUser(newUser);
+    const result = await DataService.saveUser(newUser);
 
     if (result.success) {
         showToast('Account created successfully! Please sign in.', 'success');

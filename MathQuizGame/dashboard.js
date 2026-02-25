@@ -431,11 +431,11 @@ if (!loadQuizState()) {
     updateDashboard();
 }
 
-function updateDashboard() {
+async function updateDashboard() {
     const currentUser = DataService.getCurrentUser();
     if (!currentUser) return;
 
-    const stats = DataService.getUserStats(currentUser.username);
+    const stats = await DataService.getUserStats(currentUser.username);
     if (stats) {
         document.getElementById('totalScore').textContent = stats.totalScore.toLocaleString();
         document.getElementById('quizzesCompleted').textContent = stats.quizzesCompleted;
@@ -451,7 +451,7 @@ function updateDashboard() {
         }
     }
 
-    const leaderboard = DataService.getLeaderboard();
+    const leaderboard = await DataService.getLeaderboard();
     const lbList = document.getElementById('leaderboardList');
     if (lbList) {
         lbList.innerHTML = '';
@@ -551,7 +551,7 @@ window.backToDashboard = function () {
 function resetToSetup() {
     clearQuizState();
 
-    // Restore the original quiz UI so a fresh game can start correctly
+ 
     const quizContainer = document.getElementById('quizContainer');
     if (quizContainer && typeof initialQuizContainerHTML === 'string') {
         quizContainer.innerHTML = initialQuizContainerHTML;
@@ -566,7 +566,7 @@ function resetToSetup() {
     document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.difficulty-btn[data-difficulty="medium"]').classList.add('active');
 
-    // Reset mobile steps back to step 1
+
     const setupStep1 = document.getElementById('setupStep1');
     const setupStep2 = document.getElementById('setupStep2');
     const stepDots = document.querySelectorAll('.step-dot');
