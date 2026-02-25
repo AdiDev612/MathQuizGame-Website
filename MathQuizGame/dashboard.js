@@ -18,6 +18,10 @@ const menuToggle = document.getElementById('menuToggle');
 const sidebar = document.querySelector('.sidebar');
 const logoutBtn = document.querySelector('.logout');
 
+// Preserve the original quiz container markup so we can restore it after showing results
+const quizContainerElement = document.getElementById('quizContainer');
+const initialQuizContainerHTML = quizContainerElement ? quizContainerElement.innerHTML : '';
+
 if (menuToggle) {
     menuToggle.addEventListener('click', () => {
         sidebar.classList.toggle('mobile-active');
@@ -546,6 +550,12 @@ window.backToDashboard = function () {
 
 function resetToSetup() {
     clearQuizState();
+
+    // Restore the original quiz UI so a fresh game can start correctly
+    const quizContainer = document.getElementById('quizContainer');
+    if (quizContainer && typeof initialQuizContainerHTML === 'string') {
+        quizContainer.innerHTML = initialQuizContainerHTML;
+    }
 
     document.getElementById('quizContainer').style.display = 'none';
     document.getElementById('quizSetup').style.display = 'block';
