@@ -58,6 +58,39 @@ if (savedMode) {
     setAuthMode(savedMode);
 }
 
+// Remember Me functionality
+const REMEMBER_ME_KEY = 'math_quiz_remember_username';
+const rememberCheckbox = document.getElementById('remember');
+const usernameInput = document.getElementById('username');
+
+// Load saved username on page load
+function loadSavedUsername() {
+    const savedUsername = localStorage.getItem(REMEMBER_ME_KEY);
+    if (savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberCheckbox.checked = true;
+    }
+}
+
+// Helper function to save username when remember me is checked
+function saveUsername(username) {
+    if (rememberCheckbox.checked) {
+        localStorage.setItem(REMEMBER_ME_KEY, username);
+    } else {
+        localStorage.removeItem(REMEMBER_ME_KEY);
+    }
+}
+
+// Load saved username on page load
+loadSavedUsername();
+
+// Clear saved username when checkbox is unchecked
+rememberCheckbox.addEventListener('change', (e) => {
+    if (!e.target.checked) {
+        localStorage.removeItem(REMEMBER_ME_KEY);
+    }
+});
+
 function showError(inputs, message) {
     const errorDisplay = document.getElementById('loginErrorMessage');
     if (errorDisplay && message) {
@@ -92,6 +125,13 @@ loginForm.addEventListener('submit', async (e) => {
     const result = await DataService.loginUser(username, password);
 
     if (result.success) {
+        // Save username if remember me is checked
+        if (rememberCheckbox.checked) {
+            saveUsername(username);
+        } else {
+            localStorage.removeItem(REMEMBER_ME_KEY);
+        }
+        
         localStorage.removeItem('currentSection');
         localStorage.removeItem('mathQuizState');
         window.location.replace('dashboard.html');

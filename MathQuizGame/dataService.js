@@ -93,12 +93,24 @@ const DataService = {
     async saveScore(scoreData) {
         const currentUser = this.getCurrentUser();
         if (!currentUser) {
-            console.error('No current user found. Cannot save score.');
+            console.error('❌ No current user found. Cannot save score.');
             return { success: false, message: 'User not logged in' };
         }
 
+        console.log('📝 Attempting to save score for user:', currentUser.id);
+        console.log('📊 Score data:', {
+            user_id: currentUser.id,
+            score: scoreData.score,
+            max_score: scoreData.maxScore,
+            correct_answers: scoreData.correctAnswers,
+            type: scoreData.type,
+            difficulty: scoreData.difficulty,
+            accuracy: scoreData.accuracy,
+            time_spent: scoreData.timeSpent
+        });
+
         try {
-            const { data, error } = await supabaseClient.from('scores').insert({
+            const insertPayload = {
                 user_id: currentUser.id,
                 score: scoreData.score,
                 max_score: scoreData.maxScore,
@@ -107,18 +119,28 @@ const DataService = {
                 difficulty: scoreData.difficulty,
                 accuracy: scoreData.accuracy,
                 time_spent: scoreData.timeSpent
-            }).select();
+            };
+
+            const { data, error } = await supabaseClient
+                .from('scores')
+                .insert([insertPayload])
+                .select();
 
             if (error) {
-                console.error('Error saving score to Supabase:', error);
+                console.error('❌ Error saving score to Supabase:', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
                 return { success: false, message: 'Failed to save score: ' + error.message };
             }
             
-            console.log('Score saved successfully:', data);
+            console.log('✅ Score saved successfully:', data);
             return { success: true, message: 'Score saved successfully', data: data };
         } catch (err) {
-            console.error('Exception while saving score:', err);
-            return { success: false, message: 'Unexpected error while saving score' };
+            console.error('❌ Exception while saving score:', err);
+            return { success: false, message: 'Unexpected error while saving score: ' + err.message };
         }
     },
 
