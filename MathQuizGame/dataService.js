@@ -105,8 +105,8 @@ const DataService = {
             correct_answers: scoreData.correctAnswers,
             type: scoreData.type,
             difficulty: scoreData.difficulty,
-            accuracy: scoreData.accuracy,
-            time_spent: scoreData.timeSpent
+            time_spent: scoreData.timeSpent,
+            accuracy: scoreData.accuracy
         });
 
         try {
@@ -117,8 +117,8 @@ const DataService = {
                 correct_answers: scoreData.correctAnswers,
                 type: scoreData.type,
                 difficulty: scoreData.difficulty,
-                accuracy: scoreData.accuracy,
-                time_spent: scoreData.timeSpent
+                time_spent: scoreData.timeSpent,
+                accuracy: scoreData.accuracy
             };
 
             const { data, error } = await supabaseClient
