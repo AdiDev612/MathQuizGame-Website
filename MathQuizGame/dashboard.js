@@ -67,7 +67,7 @@ if (logoutBtn) {
 
 const pageTitles = {
     'dashboard': 'Dashboard',
-    'quiz': 'Start Quiz',
+    'quiz': 'Game Modes',
     'settings': 'Settings'
 };
 
@@ -158,7 +158,7 @@ function loadQuizState() {
             navItems.forEach(nav => nav.classList.remove('active'));
             document.querySelector('[data-section="quiz"]').classList.add('active');
 
-            pageTitle.textContent = 'Start Quiz';
+            pageTitle.textContent = 'Game Modes';
 
             document.getElementById('quizSetup').style.display = 'none';
             document.getElementById('quizContainer').style.display = 'block';
@@ -189,52 +189,124 @@ document.querySelectorAll('.category-btn').forEach(btn => {
     });
 });
 
-document.querySelectorAll('.difficulty-btn').forEach(btn => {
+document.querySelectorAll('.difficulty-btn:not(.mode-card)').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.difficulty-btn:not(.mode-card)').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     });
 });
 
-// Mobile step navigation
-const nextToStep2Btn = document.getElementById('nextToStep2');
-const backToStep1Btn = document.getElementById('backToStep1');
-const setupStep1 = document.getElementById('setupStep1');
-const setupStep2 = document.getElementById('setupStep2');
-const stepDots = document.querySelectorAll('.step-dot');
+document.querySelectorAll('.mode-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        const classicOptions = document.getElementById('classicOptionsContainer');
+        const survivalOptions = document.getElementById('survivalOptionsContainer');
+        const modeSelection = document.getElementById('modeSelectionContainer');
 
-if (nextToStep2Btn) {
-    nextToStep2Btn.addEventListener('click', () => {
-        setupStep1.classList.remove('active');
-        setupStep2.classList.add('active');
-        stepDots[0].classList.remove('active');
-        stepDots[0].classList.add('completed');
-        stepDots[1].classList.add('active');
+        if (mode === 'classic') {
+            if (modeSelection) modeSelection.style.display = 'none';
+            if (classicOptions) classicOptions.style.display = 'block';
+            if (survivalOptions) survivalOptions.style.display = 'none';
+
+            // Set default active category and difficulty if none selected
+            if (!document.querySelector('#classicOptionsContainer .category-btn.active')) {
+                document.querySelector('#classicOptionsContainer .category-btn').classList.add('active');
+            }
+            if (!document.querySelector('#classicOptionsContainer .difficulty-btn.active')) {
+                document.querySelector('#classicOptionsContainer .difficulty-btn[data-difficulty="medium"]').classList.add('active');
+            }
+
+        } else if (mode === 'survival') {
+            if (modeSelection) modeSelection.style.display = 'none';
+            if (classicOptions) classicOptions.style.display = 'none';
+            if (survivalOptions) survivalOptions.style.display = 'block';
+
+            // Set default active category and difficulty if none selected
+            if (!document.querySelector('#survivalOptionsContainer .category-btn.active')) {
+                document.querySelector('#survivalOptionsContainer .category-btn').classList.add('active');
+            }
+            if (!document.querySelector('#survivalOptionsContainer .difficulty-btn.active')) {
+                document.querySelector('#survivalOptionsContainer .difficulty-btn[data-difficulty="medium"]').classList.add('active');
+            }
+
+        } else {
+            alert(mode.charAt(0).toUpperCase() + mode.slice(1) + ' mode coming soon!');
+        }
     });
-}
+});
 
-if (backToStep1Btn) {
-    backToStep1Btn.addEventListener('click', () => {
-        setupStep2.classList.remove('active');
-        setupStep1.classList.add('active');
-        stepDots[1].classList.remove('active');
-        stepDots[0].classList.remove('completed');
-        stepDots[0].classList.add('active');
+// Category and Difficulty Selection Logic
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Only remove active class from buttons in the same container
+        const container = btn.closest('#classicOptionsContainer, #survivalOptionsContainer');
+        if (container) {
+            container.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        } else {
+            // Fallback for older code if any
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
     });
-}
+});
 
-function beginQuiz() {
-    const selectedCategory = document.querySelector('.category-btn.active').dataset.category;
-    const selectedDifficulty = document.querySelector('.difficulty-btn.active').dataset.difficulty;
+document.querySelectorAll('.difficulty-btn:not(.mode-card)').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Only remove active class from buttons in the same container
+        const container = btn.closest('#classicOptionsContainer, #survivalOptionsContainer');
+        if (container) {
+            container.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        } else {
+            // Fallback
+            document.querySelectorAll('.difficulty-btn:not(.mode-card)').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    });
+});
 
-    quizType = selectedCategory;
-    quizDifficulty = selectedDifficulty;
+
+window.beginClassicQuiz = function () {
+    const activeCategory = document.querySelector('#classicOptionsContainer .category-btn.active');
+    const activeDifficulty = document.querySelector('#classicOptionsContainer .difficulty-btn.active');
+
+    quizType = activeCategory ? activeCategory.dataset.category : 'addition';
+    quizDifficulty = activeDifficulty ? activeDifficulty.dataset.difficulty : 'medium';
 
     document.getElementById('quizSetup').style.display = 'none';
     document.getElementById('quizContainer').style.display = 'block';
 
     startQuiz(quizType);
-}
+};
+
+window.beginSurvivalQuiz = function () {
+    const activeCategory = document.querySelector('#survivalOptionsContainer .category-btn.active');
+    const activeDifficulty = document.querySelector('#survivalOptionsContainer .difficulty-btn.active');
+
+    quizType = activeCategory ? activeCategory.dataset.category : 'addition';
+    quizDifficulty = activeDifficulty ? activeDifficulty.dataset.difficulty : 'medium';
+
+    // Set a global flag so startQuiz knows it's survival mode (if needed)
+    window.currentMode = 'survival';
+
+    document.getElementById('quizSetup').style.display = 'none';
+    document.getElementById('quizContainer').style.display = 'block';
+
+    startQuiz(quizType);
+};
+
+window.goBackToModes = function () {
+    const classicOptions = document.getElementById('classicOptionsContainer');
+    const survivalOptions = document.getElementById('survivalOptionsContainer');
+    const modeSelection = document.getElementById('modeSelectionContainer');
+
+    if (classicOptions) classicOptions.style.display = 'none';
+    if (survivalOptions) survivalOptions.style.display = 'none';
+    if (modeSelection) modeSelection.style.display = 'block';
+};
+
+
 
 function generateQuestion(type) {
     let num1, num2, answer, questionText;
@@ -605,24 +677,15 @@ function resetToSetup() {
     document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector('.category-btn[data-category="addition"]').classList.add('active');
 
-    document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector('.difficulty-btn[data-difficulty="medium"]').classList.add('active');
+    document.querySelectorAll('.difficulty-btn:not(.mode-card)').forEach(btn => btn.classList.remove('active'));
+    const defaultDiffBtn = document.querySelector('.difficulty-btn[data-difficulty="medium"]');
+    if (defaultDiffBtn) defaultDiffBtn.classList.add('active');
 
+    const modeSelection = document.getElementById('modeSelectionContainer');
+    if (modeSelection) modeSelection.style.display = 'block';
 
-    const setupStep1 = document.getElementById('setupStep1');
-    const setupStep2 = document.getElementById('setupStep2');
-    const stepDots = document.querySelectorAll('.step-dot');
-
-    if (setupStep1 && setupStep2) {
-        setupStep2.classList.remove('active');
-        setupStep1.classList.add('active');
-    }
-
-    if (stepDots.length >= 2) {
-        stepDots[1].classList.remove('active');
-        stepDots[0].classList.remove('completed');
-        stepDots[0].classList.add('active');
-    }
+    const classicOptions = document.getElementById('classicOptionsContainer');
+    if (classicOptions) classicOptions.style.display = 'none';
 
     localStorage.setItem('currentSection', 'quiz');
 }

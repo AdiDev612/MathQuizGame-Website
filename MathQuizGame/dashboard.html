@@ -59,7 +59,7 @@
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                     <circle cx="12" cy="17" r="0.5" fill="currentColor" />
                 </svg>
-                <span>Start Quiz</span>
+                <span>Game Modes</span>
             </a>
             <a href="#" class="nav-item" data-section="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -171,70 +171,131 @@
         <section id="quizSection" class="section">
             <div class="quiz-setup" id="quizSetup">
 
-                <div class="setup-steps-indicator">
-                    <div class="step-dot active" data-step="1">1</div>
-                    <div class="step-line"></div>
-                    <div class="step-dot" data-step="2">2</div>
-                </div>
-
-                <div class="setup-step step-1 active" id="setupStep1">
-                    <div class="setup-group">
-                        <h3>Choose Category</h3>
-                        <div class="category-options">
-                            <button class="category-btn active" data-category="addition">
-                                <span class="cat-icon">+</span>
-                                <span>Addition</span>
-                            </button>
-                            <button class="category-btn" data-category="subtraction">
-                                <span class="cat-icon">−</span>
-                                <span>Subtraction</span>
-                            </button>
-                            <button class="category-btn" data-category="multiplication">
-                                <span class="cat-icon">×</span>
-                                <span>Multiplication</span>
-                            </button>
-                            <button class="category-btn" data-category="division">
-                                <span class="cat-icon">÷</span>
-                                <span>Division</span>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="btn-primary start-quiz-btn mobile-next-btn" id="nextToStep2">
-                        Next
-                    </button>
-                </div>
-
-                <div class="setup-step step-2" id="setupStep2">
-                    <div class="setup-group">
-                        <h3>Choose Difficulty</h3>
-                        <div class="difficulty-options">
-                            <button class="difficulty-btn" data-difficulty="easy">
-                                <span class="diff-label">Easy</span>
-                                <span class="diff-desc">Numbers 1-10</span>
-                            </button>
-                            <button class="difficulty-btn active" data-difficulty="medium">
-                                <span class="diff-label">Medium</span>
-                                <span class="diff-desc">Numbers 1-50</span>
-                            </button>
-                            <button class="difficulty-btn" data-difficulty="hard">
-                                <span class="diff-label">Hard</span>
-                                <span class="diff-desc">Numbers 1-100</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="setup-step-buttons">
-                        <button class="btn-primary mobile-back-btn" id="backToStep1">
-                            Back
+                <div id="modeSelectionContainer" class="setup-group" style="max-width: 100%;">
+                    <h3>Game Modes</h3>
+                    <div class="difficulty-options"
+                        style="display: flex; flex-direction: row; justify-content: center; gap: 48px; width: 100%;">
+                        <button class="difficulty-btn mode-card" data-mode="classic"
+                            style="flex: 1; max-width: 400px; min-width: 250px;">
+                            <img src="images/logo.png" alt="Classic"
+                                style="width: 32px; height: 32px; object-fit: contain; margin-bottom: 4px;">
+                            <span class="diff-label">Classic</span>
                         </button>
-                        <button class="btn-primary start-quiz-btn" onclick="beginQuiz()">
-                            Start Quiz
+                        <button class="difficulty-btn mode-card" data-mode="survival"
+                            style="flex: 1; max-width: 400px; min-width: 250px;">
+                            <span style="font-size: 24px; margin-bottom: 4px;">⏳</span>
+                            <span class="diff-label">Survival</span>
+                        </button>
+                        <button class="difficulty-btn mode-card" data-mode="blitz"
+                            style="flex: 1; max-width: 400px; min-width: 250px;">
+                            <span style="font-size: 24px; margin-bottom: 4px;">⚡</span>
+                            <span class="diff-label">Blitz</span>
                         </button>
                     </div>
                 </div>
 
-                <button class="btn-primary start-quiz-btn desktop-start-btn" onclick="beginQuiz()">
-                    Start Quiz
-                </button>
+                <div id="classicOptionsContainer" style="display: none; width: 100%; max-width: 600px; margin: 0 auto;">
+                    <h3
+                        style="margin-bottom: 16px; font-size: 1rem; color: #6b7280; font-weight: 500; text-align: left;">
+                        Choose Category</h3>
+                    <div class="category-options"
+                        style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 32px;">
+                        <button class="category-btn active" data-category="addition" style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">+</span>
+                            <span>Addition</span>
+                        </button>
+                        <button class="category-btn" data-category="subtraction" style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">−</span>
+                            <span>Subtraction</span>
+                        </button>
+                        <button class="category-btn" data-category="multiplication" style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">×</span>
+                            <span>Multiplication</span>
+                        </button>
+                        <button class="category-btn" data-category="division" style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">÷</span>
+                            <span>Division</span>
+                        </button>
+                    </div>
+
+                    <h3
+                        style="margin-bottom: 16px; font-size: 1rem; color: #6b7280; font-weight: 500; text-align: left;">
+                        Choose Difficulty</h3>
+                    <div class="difficulty-options"
+                        style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+                        <button class="difficulty-btn" data-difficulty="easy"
+                            style="flex: 1; min-width: 100px;">Easy</button>
+                        <button class="difficulty-btn active" data-difficulty="medium"
+                            style="flex: 1; min-width: 100px;">Medium</button>
+                        <button class="difficulty-btn" data-difficulty="hard"
+                            style="flex: 1; min-width: 100px;">Hard</button>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-top: 32px; width: 100%;">
+                        <button class="btn-secondary" style="flex: 1; font-size: 1.1rem; padding: 16px;"
+                            onclick="goBackToModes()">Back</button>
+                        <button class="btn-primary start-quiz-btn"
+                            style="flex: 1; font-size: 1.1rem; padding: 16px; margin-top: 0;"
+                            onclick="beginClassicQuiz()">Start</button>
+                    </div>
+                </div>
+
+                <div id="survivalOptionsContainer"
+                    style="display: none; width: 100%; max-width: 600px; margin: 0 auto;">
+                    <h3
+                        style="margin-bottom: 16px; font-size: 1rem; color: #6b7280; font-weight: 500; text-align: left;">
+                        Choose Category</h3>
+                    <div class="category-options"
+                        style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 32px;">
+                        <button class="category-btn active survival-cat" data-category="addition"
+                            style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">+</span>
+                            <span>Addition</span>
+                        </button>
+                        <button class="category-btn survival-cat" data-category="subtraction"
+                            style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">−</span>
+                            <span>Subtraction</span>
+                        </button>
+                        <button class="category-btn survival-cat" data-category="multiplication"
+                            style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">×</span>
+                            <span>Multiplication</span>
+                        </button>
+                        <button class="category-btn survival-cat" data-category="division"
+                            style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">÷</span>
+                            <span>Division</span>
+                        </button>
+                        <button class="category-btn survival-cat" data-category="mixed"
+                            style="flex: 1; min-width: 120px;">
+                            <span class="cat-icon">🎲</span>
+                            <span>All</span>
+                        </button>
+                    </div>
+
+                    <h3
+                        style="margin-bottom: 16px; font-size: 1rem; color: #6b7280; font-weight: 500; text-align: left;">
+                        Choose Difficulty</h3>
+                    <div class="difficulty-options"
+                        style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+                        <button class="difficulty-btn survival-diff" data-difficulty="easy"
+                            style="flex: 1; min-width: 100px;">Easy</button>
+                        <button class="difficulty-btn survival-diff active" data-difficulty="medium"
+                            style="flex: 1; min-width: 100px;">Medium</button>
+                        <button class="difficulty-btn survival-diff" data-difficulty="hard"
+                            style="flex: 1; min-width: 100px;">Hard</button>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-top: 32px; width: 100%;">
+                        <button class="btn-secondary" style="flex: 1; font-size: 1.1rem; padding: 16px;"
+                            onclick="goBackToModes()">Back</button>
+                        <button class="btn-primary start-quiz-btn"
+                            style="flex: 1; font-size: 1.1rem; padding: 16px; margin-top: 0;"
+                            onclick="beginSurvivalQuiz()">Start</button>
+                    </div>
+                </div>
+
             </div>
 
             <div class="quiz-container" id="quizContainer" style="display: none;">

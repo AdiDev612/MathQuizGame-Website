@@ -546,15 +546,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 20px 16px;
+    gap: 12px;
+    padding: 30px 20px;
     background: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 16px;
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
-    min-height: 90px;
+    min-height: 120px;
     justify-content: center;
     aspect-ratio: 1;
 }
@@ -589,14 +589,16 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 20px 16px;
+    gap: 8px;
+    padding: 30px 20px;
     background: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 16px;
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
+    min-height: 100px;
+    justify-content: center;
 }
 
 .difficulty-btn:hover {
@@ -609,6 +611,17 @@ body {
     background: #22c55e;
     color: white;
 }
+
+.difficulty-btn.mode-card {
+    padding: 180px 50px;
+    gap: 16px;
+    min-height: 200px;
+}
+
+.difficulty-btn.mode-card .diff-label {
+    font-size: 1.25rem;
+}
+
 
 .diff-label {
     font-size: 1.1rem;
@@ -783,9 +796,9 @@ body {
 .btn-primary,
 .btn-secondary {
     flex: 1;
-    padding: 14px 24px;
+    padding: 18px 32px;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
