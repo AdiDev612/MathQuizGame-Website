@@ -135,7 +135,7 @@ const DataService = {
                 });
                 return { success: false, message: 'Failed to save score: ' + error.message };
             }
-            
+
             console.log('✅ Score saved successfully:', data);
             return { success: true, message: 'Score saved successfully', data: data };
         } catch (err) {
@@ -260,5 +260,81 @@ const DataService = {
         });
 
         return leaderboard.sort((a, b) => b.totalScore - a.totalScore).slice(0, 5);
+    },
+
+    async resetPassword(email, newPassword) {
+        // Find user by email
+        const { data: user, error: userError } = await supabaseClient
+            .from('user')
+            .select('id, username, email')
+            .eq('email', email)
+            .single();
+
+        if (userError || !user) {
+            console.error('Error finding user:', userError);
+            return { success: false, message: 'User not found' };
+        }
+
+        // Update password
+        const { data, error } = await supabaseClient
+            .from('user')
+            .update({ password: newPassword })
+            .eq('id', user.id)
+            .select('id, username, email')
+            .single();
+
+        if (error) {
+            console.error('Error updating password:', error);
+            return { success: false, message: 'Failed to reset password. Please try again.' };
+        }
+
+        console.log('✅ Password reset successfully for user:', user.username);
+        return { success: true, message: 'Password reset successfully' };
+    },
+
+    async changeEmail(userId, newEmail) {
+        // Check if email already exists
+        const { data: existing, error: existingError } = await supabaseClient
+            .from('user')
+            .select('id')
+            .eq('email', newEmail)
+            .limit(1);
+
+        if (existingError) {
+            console.error('Error checking existing email:', existingError);
+            return { success: false, message: 'Could not update email. Please try again.' };
+        }
+
+        if (existing && existing.length > 0) {
+            return { success: false, message: 'Email is already taken by another account!' };
+        }
+
+        // Update email
+        const { error } = await supabaseClient
+            .from('user')
+            .update({ email: newEmail })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('Error updating email:', error);
+            return { success: false, message: 'Failed to update email. Please try again.' };
+        }
+
+        return { success: true, message: 'Email updated successfully' };
+    },
+
+    async changePassword(userId, newPassword) {
+        // Update password
+        const { error } = await supabaseClient
+            .from('user')
+            .update({ password: newPassword })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('Error updating password:', error);
+            return { success: false, message: 'Failed to update password. Please try again.' };
+        }
+
+        return { success: true, message: 'Password updated successfully' };
     }
 };

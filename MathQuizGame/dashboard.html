@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
 </head>
 
 <body>
@@ -38,7 +39,7 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <span class="logo-icon">∑</span>
+            <img src="images/logo.png" alt="MathQuiz Logo" class="logo-image">
             <span class="logo-text">MathQuiz</span>
         </div>
 
@@ -60,12 +61,13 @@
                 </svg>
                 <span>Start Quiz</span>
             </a>
-            <a href="#" class="nav-item" data-section="profile">
+            <a href="#" class="nav-item" data-section="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.12-2.12l4.24-4.24M19.78 19.78l-4.24-4.24m-2.12-2.12l-4.24-4.24" />
                 </svg>
-                <span>Profile</span>
+                <span>Settings</span>
             </a>
         </nav>
 
@@ -336,17 +338,62 @@
             </div>
         </section>
 
-        <section id="profileSection" class="section">
-            <div class="profile-card">
-                <div class="profile-avatar">
-                    <span id="profileAvatarDisplay">P</span>
+        <section id="settingsSection" class="section">
+            <div class="settings-container">
+                <!-- Profile Card -->
+                <div class="settings-card profile-card">
+                    <div class="profile-display">
+                        <div class="profile-avatar">
+                            <span id="profileAvatarDisplay">P</span>
+                        </div>
+                        <div class="profile-info">
+                            <p><strong>Username:</strong> <span id="profileNameDisplay">Player</span></p>
+                            <p><strong>Email:</strong> <span id="profileEmailDisplay">player@example.com</span></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="profile-info">
-                    <h3 id="profileNameDisplay">Player</h3>
-                    <p id="profileEmailDisplay">player@example.com</p>
+
+                <!-- Change Email Card -->
+                <div class="settings-card">
+                    <button type="button" class="btn-toggle-form" id="toggleEmailFormBtn">Change Email</button>
+                    <form id="changeEmailForm" style="display: none;">
+                        <div id="emailErrorMessage" class="error-message"></div>
+                        <div class="form-group">
+                            <label for="newEmail">New Email Address</label>
+                            <input type="email" id="newEmail" placeholder="Enter new email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="currentPasswordForEmail">Current Password</label>
+                            <input type="password" id="currentPasswordForEmail" placeholder="Enter your password"
+                                required>
+                        </div>
+                        <button type="submit" class="btn-update">Update Email</button>
+                    </form>
+                </div>
+
+                <!-- Change Password Card -->
+                <div class="settings-card">
+                    <button type="button" class="btn-toggle-form" id="togglePasswordFormBtn">Change Password</button>
+                    <form id="changePasswordForm" style="display: none;">
+                        <div id="passwordErrorMessage" class="error-message"></div>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter your current password"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password (min 8 characters)"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword">Confirm Password</label>
+                            <input type="password" id="confirmNewPassword" placeholder="Confirm new password" required>
+                        </div>
+                        <button type="submit" class="btn-update">Update Password</button>
+                    </form>
                 </div>
             </div>
-
         </section>
     </main>
 

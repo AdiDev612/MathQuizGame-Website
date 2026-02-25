@@ -29,15 +29,24 @@ if (DataService.getCurrentUser()) {
 
 const signInSection = document.getElementById('signInSection');
 const signUpSection = document.getElementById('signUpSection');
+const forgotSection = document.getElementById('forgotSection');
 const showSignUpLink = document.getElementById('showSignUp');
 const showSignInLink = document.getElementById('showSignIn');
+const forgotLink = document.querySelector('.forgot-link');
+const backToSignInLink = document.getElementById('backToSignIn');
 
 function setAuthMode(mode) {
     if (mode === 'signup') {
         signInSection.classList.remove('active');
         signUpSection.classList.add('active');
+        forgotSection.classList.remove('active');
+    } else if (mode === 'forgot') {
+        signInSection.classList.remove('active');
+        signUpSection.classList.remove('active');
+        forgotSection.classList.add('active');
     } else {
         signUpSection.classList.remove('active');
+        forgotSection.classList.remove('active');
         signInSection.classList.add('active');
     }
     localStorage.setItem('auth_mode', mode);
@@ -52,6 +61,20 @@ showSignInLink.addEventListener('click', (e) => {
     e.preventDefault();
     setAuthMode('login');
 });
+
+if (forgotLink) {
+    forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        setAuthMode('forgot');
+    });
+}
+
+if (backToSignInLink) {
+    backToSignInLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        setAuthMode('login');
+    });
+}
 
 const savedMode = localStorage.getItem('auth_mode');
 if (savedMode) {
@@ -215,6 +238,69 @@ signupForm.addEventListener('submit', async (e) => {
         showSignupError([usernameInput, emailInput], result.message);
     }
 });
+
+// Forgot Password functionality
+function showForgotError(inputs, message) {
+    const errorDisplay = document.getElementById('forgotErrorMessage');
+    if (errorDisplay && message) {
+        errorDisplay.textContent = message;
+    }
+
+    inputs.forEach(input => {
+        const wrapper = input.closest('.input-wrapper');
+        wrapper.classList.add('error');
+
+        input.addEventListener('input', () => {
+            wrapper.classList.remove('error');
+            if (errorDisplay) errorDisplay.textContent = '';
+        }, { once: true });
+    });
+}
+
+const forgotForm = document.getElementById('forgotForm');
+if (forgotForm) {
+    forgotForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('forgotEmail');
+        const newPasswordInput = document.getElementById('forgotNewPassword');
+        const confirmPasswordInput = document.getElementById('forgotConfirmPassword');
+
+        const email = emailInput.value.trim();
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (!email || !newPassword || !confirmPassword) {
+            showForgotError([emailInput, newPasswordInput, confirmPasswordInput], 'Please fill in all fields');
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            showForgotError([newPasswordInput, confirmPasswordInput], 'Password must be at least 8 characters long');
+            return;
+        }
+
+        if (newPassword.length > 32) {
+            showForgotError([newPasswordInput, confirmPasswordInput], 'Password must be 32 characters or less');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showForgotError([newPasswordInput, confirmPasswordInput], 'Passwords do not match');
+            return;
+        }
+
+        const result = await DataService.resetPassword(email, newPassword);
+
+        if (result.success) {
+            showToast('Password reset successfully! Please sign in.', 'success');
+            forgotForm.reset();
+            setAuthMode('login');
+        } else {
+            showForgotError([emailInput], result.message);
+        }
+    });
+}
 
 // Show/hide password functionality
 const togglePasswordButtons = document.querySelectorAll('.toggle-password');

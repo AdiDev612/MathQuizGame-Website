@@ -2,7 +2,7 @@
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     if (!container) return;
-    
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
 
@@ -68,7 +68,7 @@ if (logoutBtn) {
 const pageTitles = {
     'dashboard': 'Dashboard',
     'quiz': 'Start Quiz',
-    'profile': 'Profile'
+    'settings': 'Settings'
 };
 
 navItems.forEach(item => {
@@ -593,7 +593,7 @@ window.backToDashboard = function () {
 function resetToSetup() {
     clearQuizState();
 
- 
+
     const quizContainer = document.getElementById('quizContainer');
     if (quizContainer && typeof initialQuizContainerHTML === 'string') {
         quizContainer.innerHTML = initialQuizContainerHTML;
@@ -649,6 +649,143 @@ function restoreSection() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    // Toggle Email Form
+    const toggleEmailBtn = document.getElementById('toggleEmailFormBtn');
+    const emailForm = document.getElementById('changeEmailForm');
+    if (toggleEmailBtn && emailForm) {
+        toggleEmailBtn.addEventListener('click', () => {
+            const isHidden = emailForm.style.display === 'none';
+            emailForm.style.display = isHidden ? 'block' : 'none';
+            toggleEmailBtn.classList.toggle('active', isHidden);
+            toggleEmailBtn.textContent = isHidden ? 'Cancel Change Email' : 'Change Email';
+        });
+    }
+
+    // Toggle Password Form
+    const togglePasswordBtn = document.getElementById('togglePasswordFormBtn');
+    const passwordForm = document.getElementById('changePasswordForm');
+    if (togglePasswordBtn && passwordForm) {
+        togglePasswordBtn.addEventListener('click', () => {
+            const isHidden = passwordForm.style.display === 'none';
+            passwordForm.style.display = isHidden ? 'block' : 'none';
+            togglePasswordBtn.classList.toggle('active', isHidden);
+            togglePasswordBtn.textContent = isHidden ? 'Cancel Change Password' : 'Change Password';
+        });
+    }
+
+    // Change Email Handler
+    const changeEmailForm = document.getElementById('changeEmailForm');
+    if (changeEmailForm) {
+        changeEmailForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newEmailInput = document.getElementById('newEmail');
+            const currentPasswordInput = document.getElementById('currentPasswordForEmail');
+            const errorMessage = document.getElementById('emailErrorMessage');
+
+            const newEmail = newEmailInput.value.trim();
+            const currentPassword = currentPasswordInput.value;
+
+            if (!newEmail || !currentPassword) {
+                errorMessage.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            const currentUser = DataService.getCurrentUser();
+            if (!currentUser) {
+                errorMessage.textContent = 'User not logged in';
+                return;
+            }
+
+            // Verify current password first
+            const verifyResult = await DataService.loginUser(currentUser.username, currentPassword);
+            if (!verifyResult.success) {
+                errorMessage.textContent = 'Current password is incorrect';
+                currentPasswordInput.value = '';
+                return;
+            }
+
+            // Update email
+            const result = await DataService.changeEmail(currentUser.id, newEmail);
+            if (result.success) {
+                showToast('Email updated successfully!', 'success');
+
+                // Update local user data
+                currentUser.email = newEmail;
+                DataService.setCurrentUser(currentUser);
+                document.getElementById('profileEmailDisplay').textContent = newEmail;
+
+                changeEmailForm.reset();
+                errorMessage.textContent = '';
+            } else {
+                errorMessage.textContent = result.message;
+            }
+        });
+    }
+
+    // Change Password Handler
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPasswordInput = document.getElementById('currentPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmPasswordInput = document.getElementById('confirmNewPassword');
+            const errorMessage = document.getElementById('passwordErrorMessage');
+
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                errorMessage.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            const currentUser = DataService.getCurrentUser();
+            if (!currentUser) {
+                errorMessage.textContent = 'User not logged in';
+                return;
+            }
+
+            // Verify current password
+            const verifyResult = await DataService.loginUser(currentUser.username, currentPassword);
+            if (!verifyResult.success) {
+                errorMessage.textContent = 'Current password is incorrect';
+                currentPasswordInput.value = '';
+                return;
+            }
+
+            // Validate new password
+            if (newPassword.length < 8) {
+                errorMessage.textContent = 'Password must be at least 8 characters long';
+                return;
+            }
+
+            if (newPassword.length > 32) {
+                errorMessage.textContent = 'Password must be 32 characters or less';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errorMessage.textContent = 'New passwords do not match';
+                newPasswordInput.value = '';
+                confirmPasswordInput.value = '';
+                return;
+            }
+
+            // Update password
+            const result = await DataService.changePassword(currentUser.id, newPassword);
+            if (result.success) {
+                showToast('Password updated successfully!', 'success');
+                changePasswordForm.reset();
+                errorMessage.textContent = '';
+            } else {
+                errorMessage.textContent = result.message;
+            }
+        });
+    }
 
     const quizLoaded = loadQuizState();
 
