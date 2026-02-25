@@ -1,3 +1,30 @@
+// Toast notification system
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '❌';
+
+    toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <span class="toast-message">${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 const currentUser = DataService.getCurrentUser();
 if (!currentUser) {
     window.location.replace('index.html');
@@ -501,7 +528,8 @@ async function showResults() {
     const totalAnswered = correctAnswers + wrongAnswers;
     const finalAccuracy = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
 
-    await DataService.saveScore({
+    // Save the score and handle the result
+    const saveResult = await DataService.saveScore({
         score: score,
         maxScore: maxScore,
         correctAnswers: correctAnswers,
@@ -510,6 +538,14 @@ async function showResults() {
         accuracy: finalAccuracy,
         timeSpent: 200 - timeLeft
     });
+
+    if (!saveResult.success) {
+        console.error('Failed to save score:', saveResult.message);
+        showToast('⚠️ Warning: Score may not have been saved. ' + saveResult.message, 'error');
+    } else {
+        console.log('Score saved successfully');
+        showToast('✅ Score saved successfully!', 'success');
+    }
 
     // After saving the score, refresh dashboard stats and leaderboard
     await updateDashboard();

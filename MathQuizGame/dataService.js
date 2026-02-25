@@ -92,24 +92,34 @@ const DataService = {
 
     async saveScore(scoreData) {
         const currentUser = this.getCurrentUser();
-        if (!currentUser) return false;
-
-        const { error } = await supabaseClient.from('scores').insert({
-            user_id: currentUser.id,
-            score: scoreData.score,
-            max_score: scoreData.maxScore,
-            correct_answers: scoreData.correctAnswers,
-            type: scoreData.type,
-            difficulty: scoreData.difficulty,
-            accuracy: scoreData.accuracy,
-            time_spent: scoreData.timeSpent
-        });
-
-        if (error) {
-            console.error('Error saving score:', error);
-            return false;
+        if (!currentUser) {
+            console.error('No current user found. Cannot save score.');
+            return { success: false, message: 'User not logged in' };
         }
-        return true;
+
+        try {
+            const { data, error } = await supabaseClient.from('scores').insert({
+                user_id: currentUser.id,
+                score: scoreData.score,
+                max_score: scoreData.maxScore,
+                correct_answers: scoreData.correctAnswers,
+                type: scoreData.type,
+                difficulty: scoreData.difficulty,
+                accuracy: scoreData.accuracy,
+                time_spent: scoreData.timeSpent
+            }).select();
+
+            if (error) {
+                console.error('Error saving score to Supabase:', error);
+                return { success: false, message: 'Failed to save score: ' + error.message };
+            }
+            
+            console.log('Score saved successfully:', data);
+            return { success: true, message: 'Score saved successfully', data: data };
+        } catch (err) {
+            console.error('Exception while saving score:', err);
+            return { success: false, message: 'Unexpected error while saving score' };
+        }
     },
 
     async getUserHistory() {
