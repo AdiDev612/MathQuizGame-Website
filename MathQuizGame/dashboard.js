@@ -541,10 +541,8 @@ async function showResults() {
 
     if (!saveResult.success) {
         console.error('Failed to save score:', saveResult.message);
-        showToast('⚠️ Warning: Score may not have been saved. ' + saveResult.message, 'error');
     } else {
         console.log('Score saved successfully');
-        showToast('✅ Score saved successfully!', 'success');
     }
 
     // After saving the score, refresh dashboard stats and leaderboard
