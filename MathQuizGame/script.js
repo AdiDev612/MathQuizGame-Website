@@ -136,6 +136,23 @@ signupForm.addEventListener('submit', (e) => {
         return;
     }
 
+    // Username length limits
+    if (username.length < 3 || username.length > 20) {
+        showSignupError([usernameInput], 'Username must be between 3 and 20 characters');
+        return;
+    }
+
+    // Password length limits
+    if (password.length < 8) {
+        showSignupError([passwordInput, confirmPasswordInput], 'Password must be at least 8 characters long');
+        return;
+    }
+
+    if (password.length > 32) {
+        showSignupError([passwordInput, confirmPasswordInput], 'Password must be 32 characters or less');
+        return;
+    }
+
     if (password !== confirmPassword) {
         showSignupError([passwordInput, confirmPasswordInput], 'Passwords do not match');
         return;
@@ -159,3 +176,20 @@ signupForm.addEventListener('submit', (e) => {
     }
 });
 
+// Show/hide password functionality
+const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+togglePasswordButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const input = document.getElementById(targetId);
+        if (!input) return;
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = 'Hide';
+        } else {
+            input.type = 'password';
+            btn.textContent = 'Show';
+        }
+    });
+});

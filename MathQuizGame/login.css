@@ -153,6 +153,21 @@ body {
     align-items: center;
 }
 
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.toggle-password:hover {
+    color: #111827;
+}
+
 .input-icon {
     position: absolute;
     left: 14px;
@@ -164,7 +179,7 @@ body {
 
 .input-wrapper input {
     width: 100%;
-    padding: 14px 14px 14px 44px;
+    padding: 14px 60px 14px 44px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
