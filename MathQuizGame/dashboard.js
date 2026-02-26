@@ -774,7 +774,8 @@ async function showResults() {
         type: quizType,
         difficulty: quizDifficulty,
         accuracy: finalAccuracy,
-        timeSpent: timeSpentAmount
+        timeSpent: timeSpentAmount,
+        mode: window.currentMode || 'classic'
     });
 
     if (!saveResult.success) {
