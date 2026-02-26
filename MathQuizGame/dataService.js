@@ -106,7 +106,8 @@ const DataService = {
             type: scoreData.type,
             difficulty: scoreData.difficulty,
             time_spent: scoreData.timeSpent,
-            accuracy: scoreData.accuracy
+            accuracy: scoreData.accuracy,
+            mode: scoreData.mode
         });
 
         try {
@@ -118,7 +119,8 @@ const DataService = {
                 type: scoreData.type,
                 difficulty: scoreData.difficulty,
                 time_spent: scoreData.timeSpent,
-                accuracy: scoreData.accuracy
+                accuracy: scoreData.accuracy,
+                mode: scoreData.mode
             };
 
             const { data, error } = await supabaseClient
@@ -191,34 +193,72 @@ const DataService = {
 
         const { data: scores, error } = await supabaseClient
             .from('scores')
-            .select('score, accuracy, time_spent')
+            .select('score, accuracy, time_spent, mode')
             .eq('user_id', userId);
+
+        const defaultStats = {
+            totalScore: 0,
+            quizzesCompleted: 0,
+            avgTime: 0,
+            accuracy: 0,
+            modes: {
+                classic: { totalScore: 0, quizzesCompleted: 0, avgTime: 0, accuracy: 0 },
+                survival: { totalScore: 0, quizzesCompleted: 0, avgTime: 0, accuracy: 0 },
+                blitz: { totalScore: 0, quizzesCompleted: 0, avgTime: 0, accuracy: 0 }
+            }
+        };
 
         if (error || !scores || scores.length === 0) {
             if (error) {
                 console.error('Error fetching user stats:', error);
             }
-            return {
-                totalScore: 0,
-                quizzesCompleted: 0,
-                avgTime: 0,
-                accuracy: 0
-            };
+            return defaultStats;
         }
 
-        const totalScore = scores.reduce((sum, s) => sum + (s.score || 0), 0);
-        const totalaccuracy = scores.reduce((sum, s) => sum + (s.accuracy || 0), 0);
-        const totalTime = scores.reduce((sum, s) => sum + (s.time_spent || 0), 0);
+        const createAgg = () => ({ sumScore: 0, sumAccuracy: 0, sumTime: 0, count: 0 });
+        const agg = {
+            total: createAgg(),
+            classic: createAgg(),
+            survival: createAgg(),
+            blitz: createAgg()
+        };
+
+        scores.forEach(s => {
+            const m = s.mode || 'classic'; // Default to classic for old data
+
+            // Add to total
+            agg.total.sumScore += (s.score || 0);
+            agg.total.sumAccuracy += (s.accuracy || 0);
+            agg.total.sumTime += (s.time_spent || 0);
+            agg.total.count++;
+
+            // Add to mode
+            if (agg[m]) {
+                agg[m].sumScore += (s.score || 0);
+                agg[m].sumAccuracy += (s.accuracy || 0);
+                agg[m].sumTime += (s.time_spent || 0);
+                agg[m].count++;
+            }
+        });
+
+        const finalizeAgg = (a) => ({
+            totalScore: a.sumScore,
+            quizzesCompleted: a.count,
+            accuracy: a.count > 0 ? Math.round(a.sumAccuracy / a.count) : 0,
+            avgTime: a.count > 0 ? Math.round(a.sumTime / a.count) : 0
+        });
 
         return {
-            totalScore: totalScore,
-            quizzesCompleted: scores.length,
-            accuracy: Math.round(totalaccuracy / scores.length),
-            avgTime: Math.round(totalTime / scores.length)
+            ...finalizeAgg(agg.total),
+            modes: {
+                classic: finalizeAgg(agg.classic),
+                survival: finalizeAgg(agg.survival),
+                blitz: finalizeAgg(agg.blitz)
+            }
         };
     },
 
-    async getLeaderboard() {
+    async getLeaderboard(mode = 'total') {
         const { data: users, error: usersError } = await supabaseClient
             .from('user')
             .select('id, username');
@@ -232,7 +272,7 @@ const DataService = {
 
         const { data: scores, error: scoresError } = await supabaseClient
             .from('scores')
-            .select('user_id, score');
+            .select('user_id, score, mode');
 
         if (scoresError || !scores) {
             if (scoresError) {
@@ -244,10 +284,13 @@ const DataService = {
         const aggregates = new Map();
 
         scores.forEach(s => {
-            const agg = aggregates.get(s.user_id) || { totalScore: 0, quizzesCompleted: 0 };
-            agg.totalScore += s.score || 0;
-            agg.quizzesCompleted += 1;
-            aggregates.set(s.user_id, agg);
+            const m = s.mode || 'classic'; // Default to classic for old data
+            if (mode === 'total' || mode === m) {
+                const agg = aggregates.get(s.user_id) || { totalScore: 0, quizzesCompleted: 0 };
+                agg.totalScore += s.score || 0;
+                agg.quizzesCompleted += 1;
+                aggregates.set(s.user_id, agg);
+            }
         });
 
         const leaderboard = users.map(user => {
